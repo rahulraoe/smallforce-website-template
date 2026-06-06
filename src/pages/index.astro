@@ -1,59 +1,22 @@
 ---
-import DeploymentBadge from "@/components/DeploymentBadge.astro";
-import { DbQuickCheck } from "@/components/DbQuickCheck";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { getSmallForceConfig } from "@/lib/smallforce";
-
-const config = getSmallForceConfig();
-const appName = config.name || "Customer App";
 ---
 
-<BaseLayout title={appName}>
+<BaseLayout>
   <section class="border-b">
-    <div class="mx-auto grid min-h-[calc(100vh-73px)] w-full max-w-6xl items-center gap-10 px-5 py-14 lg:grid-cols-[1.05fr_0.95fr]">
-      <div>
-        <DeploymentBadge />
-        <h1 class="mt-6 max-w-3xl text-4xl font-semibold leading-tight tracking-normal sm:text-5xl">
+    <div class="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-6xl items-center px-5 py-14">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl font-semibold leading-tight tracking-normal sm:text-5xl">
           Build the customer's website, content hub, or fullstack workflow here.
         </h1>
         <p class="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
-          This Astro template is ready for Tailwind CSS, shadcn/ui, content collections, server routes, and SmallForce backend-mediated database calls.
+          This Astro template is ready for Tailwind CSS, shadcn/ui, content collections, server routes, and SmallForce backend-mediated runtime helpers.
         </p>
-        <div class="mt-8 flex flex-wrap gap-3">
-          <Button asChild>
-            <a href="/blog">View content</a>
-          </Button>
-          <Button asChild variant="outline">
-            <a href="/api/health">Health route</a>
-          </Button>
-        </div>
-      </div>
-      <div class="grid gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Template state</CardTitle>
-            <CardDescription>Update this through `smallforce.json` after app creation and deploy.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <dl class="grid gap-3 text-sm">
-              <div class="flex items-center justify-between gap-4">
-                <dt class="text-muted-foreground">App ID</dt>
-                <dd class="font-mono">{config.appId || "empty"}</dd>
-              </div>
-              <div class="flex items-center justify-between gap-4">
-                <dt class="text-muted-foreground">Deployment ID</dt>
-                <dd class="font-mono">{config.deploymentId || "empty"}</dd>
-              </div>
-              <div class="flex items-center justify-between gap-4">
-                <dt class="text-muted-foreground">Backend</dt>
-                <dd class="font-mono text-xs">{config.backendUrl}</dd>
-              </div>
-            </dl>
-          </CardContent>
-        </Card>
-        <DbQuickCheck client:load />
+        <Button className="mt-8" asChild>
+          <a href="/blog">View content</a>
+        </Button>
       </div>
     </div>
   </section>

@@ -24,6 +24,12 @@ export function getSmallForceConfig(): SmallForceConfig {
     runtime: {
       ...manifest.runtime,
       dbQueryPath: manifest.runtime.dbQueryPath || "/internal/apps/runtime/db/query",
+      storageUploadPath:
+        manifest.runtime.storageUploadPath || "/internal/apps/runtime/storage/upload",
+      storageObjectPath:
+        manifest.runtime.storageObjectPath || "/internal/apps/runtime/storage/object",
+      storageListPath:
+        manifest.runtime.storageListPath || "/internal/apps/runtime/storage/list",
     },
     deploymentUrl: manifest.deploymentUrl,
   };

@@ -42,9 +42,18 @@
     "runtime": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["dbQueryPath"],
+      "required": ["dbQueryPath", "storageUploadPath", "storageObjectPath", "storageListPath"],
       "properties": {
         "dbQueryPath": {
+          "type": "string"
+        },
+        "storageUploadPath": {
+          "type": "string"
+        },
+        "storageObjectPath": {
+          "type": "string"
+        },
+        "storageListPath": {
           "type": "string"
         }
       }

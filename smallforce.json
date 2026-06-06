@@ -10,7 +10,10 @@
   },
   "backendUrl": "https://backend.smallforcehq.com",
   "runtime": {
-    "dbQueryPath": "/internal/apps/runtime/db/query"
+    "dbQueryPath": "/internal/apps/runtime/db/query",
+    "storageUploadPath": "/internal/apps/runtime/storage/upload",
+    "storageObjectPath": "/internal/apps/runtime/storage/object",
+    "storageListPath": "/internal/apps/runtime/storage/list"
   },
   "deploymentUrl": "",
   "build": {

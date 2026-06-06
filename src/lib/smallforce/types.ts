@@ -12,6 +12,9 @@ export type SmallForceConfig = {
   backendUrl: string;
   runtime: {
     dbQueryPath: string;
+    storageUploadPath: string;
+    storageObjectPath: string;
+    storageListPath: string;
   };
   deploymentUrl: string;
 };
