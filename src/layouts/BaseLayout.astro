@@ -1,0 +1,39 @@
+---
+import "@/styles/global.css";
+import { site } from "@/lib/site";
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const { title = site.name, description = site.description } = Astro.props;
+const pageTitle = title === site.name ? title : `${title} | ${site.name}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="border-b bg-background/95">
+      <div class="mx-auto flex w-full max-w-6xl items-center justify-between gap-6 px-5 py-4">
+        <a href="/" class="flex items-center gap-3 font-semibold">
+          <img src="/favicon.svg" alt="" class="size-8 rounded-md" />
+          <span>{site.name}</span>
+        </a>
+        <nav class="flex items-center gap-5 text-sm text-muted-foreground">
+          {site.nav.map((item) => <a class="hover:text-foreground" href={item.href}>{item.label}</a>)}
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "$schema": "./smallforce.schema.json",
+  "appId": "",
+  "deploymentId": "",
+  "name": "",
+  "slug": "",
+  "type": "static",
+  "capabilities": {
+    "db": false
+  },
+  "backendUrl": "https://backend.smallforcehq.com",
+  "runtime": {
+    "dbQueryPath": "/internal/apps/runtime/db/query"
+  },
+  "deploymentUrl": "",
+  "build": {
+    "command": "bun run build",
+    "outputDirectory": "dist"
+  },
+  "resources": {},
+  "deployment": {},
+  "updatedAt": ""
+}
