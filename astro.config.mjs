@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, sessionDrivers } from "astro/config";
 
 export default defineConfig({
-  output: "static",
+  output: "server",
   // Avoid Astro's default Cloudflare KV session binding. Persistent data must go through SmallForce DB.
   session: {
     driver: sessionDrivers.lruCache(),

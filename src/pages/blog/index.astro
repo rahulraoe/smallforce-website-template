@@ -5,6 +5,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 const posts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+export const prerender = true;
 ---
 
 <BaseLayout title="Blog" description="Content collection starter pages.">

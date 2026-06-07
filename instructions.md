@@ -10,7 +10,38 @@ Use this Astro template for all generated apps.
 - Use `fullstack` for dashboards, CRMs, forms, customer portals, upload flows, API routes, and any app that needs server-side work.
 - Enable DB only when the app needs persistent records. Storage is available through the runtime storage helper and does not need a separate app capability flag.
 
+`static` and `fullstack` are SmallForce CLI/backend app types. They do not mean you should rewrite Astro configuration. Keep the template's `astro.config.mjs` Cloudflare adapter, React integration, Tailwind Vite plugin, and `output: "server"` unless the SmallForce platform contract is intentionally being changed.
+
 Content-heavy sites are still `static` apps in the SmallForce backend. Use `src/content/blog` and `src/content.config.ts` for blogs, guides, locations, FAQs, and case studies.
+
+## Design And Theme
+
+Generated apps must look like finished, modern websites or tools for the customer's actual business. Do not ship the starter layout, generic cards, placeholder copy, debug panels, or template instructions as visible UI.
+
+For websites, build a complete first screen with a clear business identity, specific offer, service/product context, strong calls to action, and real content sections. Use visual assets that match the business when appropriate, such as service photos, product photos, venue photos, or carefully chosen licensed/remote images. Avoid generic SaaS-style hero copy for local businesses.
+
+For operational apps and dashboards, prioritize dense, usable workflows over marketing layout. Keep navigation predictable, controls clear, and repeated data easy to scan.
+
+Use the existing Tailwind and shadcn/ui setup. Prefer the components in `src/components/ui` and Tailwind utility classes over adding new UI frameworks.
+
+Do not remove Tailwind, shadcn/ui, React, the Cloudflare adapter, `@tailwindcss/vite`, or `@import "tailwindcss"` to work around a build error. Build errors are usually dependency/install state or application code issues; fix the concrete error instead of cutting out the template's styling/runtime stack.
+
+If the brand/theme needs to change, update `src/styles/global.css` instead of scattering one-off color classes across pages. Change the CSS custom properties in `:root` and `.dark`, especially:
+
+- `--background`
+- `--foreground`
+- `--primary`
+- `--primary-foreground`
+- `--secondary`
+- `--accent`
+- `--muted`
+- `--border`
+- `--ring`
+- `--radius`
+
+Keep the palette balanced and readable. Do not leave the template's default blue/green colors if they do not fit the customer. Check contrast for buttons, cards, form fields, and nav text after changing theme tokens.
+
+Use `src/styles/global.css` for global typography, body background, base link behavior, and theme tokens. Use page/component files for layout and content-specific spacing. Do not hard-code broad brand colors into many individual elements when a theme token should represent that color.
 
 ## Local Development
 
@@ -19,6 +50,18 @@ bun install
 bun run dev
 bun run build
 ```
+
+Use Bun for this template. The repository declares `packageManager: bun`, and generated apps should keep a single Bun lockfile. Do not run `npm install`, `npm run build`, `pnpm install`, or add `package-lock.json` / `pnpm-lock.yaml` unless the user explicitly asks to migrate the template package manager.
+
+If you find mixed package-manager artifacts or stale dependency state, restore a clean Bun install before changing framework code:
+
+```bash
+rm -rf node_modules package-lock.json pnpm-lock.yaml .astro node_modules/.vite
+bun install
+bun run build
+```
+
+Errors such as `Host version "x" does not match binary version "y"` from `esbuild`, unexpected Vite version mismatches, or failures after switching between npm and Bun are install-state problems. Clean reinstall with Bun first; do not describe them as Tailwind/Vite plugin conflicts unless the error specifically points to Tailwind plugin configuration after a clean install.
 
 The template uses Astro, Tailwind CSS, shadcn/ui React components, Astro content collections, and the Astro Cloudflare adapter.
 
