@@ -13,3 +13,7 @@ smallforce app deploy
 
 Read `AGENTS.md` before editing. The build emits one Worker module at
 `dist/worker/entry.mjs`; there is no browser asset directory.
+
+After deployment, use `smallforce app logs` and `smallforce app diagnostics`
+instead of creating public debug endpoints. See `AGENTS.md` for the complete
+observability workflow.

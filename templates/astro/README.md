@@ -15,6 +15,11 @@ bun run build
 smallforce app deploy
 ```
 
+After deployment, use `smallforce app logs`, `smallforce app analytics`, and
+`smallforce app diagnostics` to inspect the owned application without adding
+public debugging routes. See `AGENTS.md` for the exact commands and security
+boundary.
+
 The build emits `dist/worker/entry.mjs` and `dist/client/`. Do not deploy those
 folders directly; the SmallForce CLI packages and activates them as one
 immutable application release.
