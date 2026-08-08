@@ -1,0 +1,39 @@
+# SmallForce Astro application
+
+Full-stack Astro starter for websites, portals, forms, dashboards, and other
+applications that benefit from Astro pages and API routes.
+
+```sh
+bun install
+bun run dev
+```
+
+Read `AGENTS.md` before changing the project. When the application is ready:
+
+```sh
+bun run build
+smallforce app deploy
+```
+
+The build emits `dist/worker/entry.mjs` and `dist/client/`. Do not deploy those
+folders directly; the SmallForce CLI packages and activates them as one
+immutable application release.
+
+Public pages include canonical metadata, Open Graph and Twitter cards, JSON-LD
+support, `robots.txt`, and an automatically generated sitemap. The versioned
+SmallForce marketing card at `public/og/smallforce-default-v2.jpg` is the safe
+fallback. Replace it with a versioned, customer-specific card before shipping
+a finished public website.
+
+`bun run og:render` reproduces the fallback using the editable source in
+`scripts/render-og.mjs` and `scripts/og-assets/`. Adapt those inputs for the
+customer rather than layering text over arbitrary gradients. Always change the
+output filename when the artwork changes because social networks cache shared
+images independently of a website deployment.
+
+After building a public site, validate its generated SEO artifacts:
+
+```sh
+bun run build
+bun run check:seo
+```

@@ -1,0 +1,16 @@
+{
+  "appId": "",
+  "deploymentId": "",
+  "name": "",
+  "slug": "",
+  "backendUrl": "https://backend.smallforcehq.com",
+  "url": "",
+  "build": {
+    "command": "bun run build",
+    "outputDirectory": "dist",
+    "entrypoint": "worker/entry.mjs",
+    "assetsDirectory": null
+  },
+  "deployment": null,
+  "updatedAt": ""
+}

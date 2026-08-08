@@ -1,0 +1,47 @@
+---
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const prerender = true;
+---
+
+<BaseLayout>
+  <section class="border-b">
+    <div class="mx-auto flex min-h-[calc(100vh-73px)] w-full max-w-6xl items-center px-5 py-14">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl font-semibold leading-tight tracking-normal sm:text-5xl">
+          Replace this starter with the customer's real application.
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
+          Astro pages and API routes deploy together as one Worker. Server code
+          receives app-scoped SQLite, mutable storage, variables, and secrets
+          directly from the SmallForce runtime.
+        </p>
+        <Button className="mt-8" asChild>
+          <a href="/blog">View content</a>
+        </Button>
+      </div>
+    </div>
+  </section>
+  <section class="mx-auto grid w-full max-w-6xl gap-4 px-5 py-12 md:grid-cols-3">
+    <Card>
+      <CardHeader>
+        <CardTitle>Pages</CardTitle>
+        <CardDescription>Prerender public content and render dynamic routes on demand.</CardDescription>
+      </CardHeader>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle>Database</CardTitle>
+        <CardDescription>Use parameterized SQLite through env.DB in server code.</CardDescription>
+      </CardHeader>
+    </Card>
+    <Card>
+      <CardHeader>
+        <CardTitle>Storage</CardTitle>
+        <CardDescription>Use env.STORAGE for app-scoped mutable files and quotas.</CardDescription>
+      </CardHeader>
+    </Card>
+  </section>
+</BaseLayout>
