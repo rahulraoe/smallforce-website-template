@@ -1,4 +1,5 @@
 /// <reference types="astro/client" />
+/// <reference types="@cloudflare/workers-types" />
 
 type SqlValue = ArrayBuffer | string | number | boolean | null;
 
@@ -80,10 +81,6 @@ interface SmallForceApplicationEnv {
   [name: string]: unknown;
 }
 
-declare namespace App {
-  interface Locals {
-    runtime: {
-      env: SmallForceApplicationEnv;
-    };
-  }
+declare namespace Cloudflare {
+  interface Env extends SmallForceApplicationEnv {}
 }

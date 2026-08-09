@@ -48,6 +48,10 @@ with immutable browser files also receive `env.ASSETS`; framework adapters use
 that binding to serve the current release. Runtime variables and secrets are
 injected as direct server-only `env.<NAME>` values.
 
+Astro applications import that environment from `cloudflare:workers`. The
+template includes Cloudflare runtime types augmented with the SmallForce
+application binding contract.
+
 Each template contains its own `AGENTS.md`. Agents must read that file before
 editing. `smallforce.json` is owned jointly by the project and CLI: the
 template supplies build paths, and the CLI fills in application identity,

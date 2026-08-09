@@ -19,14 +19,15 @@ instructions as visible UI.
 ## Application bindings
 
 Every deployed app receives its own persistent SQLite database and mutable
-object-storage namespace. Astro route handlers receive the Worker environment
-at `locals.runtime.env`; after that, call the bindings directly:
+object-storage namespace. Astro 6 and newer expose the Worker environment
+through the `cloudflare:workers` module. Import `env` in server-only Astro
+pages and route handlers, then call the bindings directly:
 
 ```ts
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
-export const POST: APIRoute = async ({ locals, request }) => {
-  const env = locals.runtime.env;
+export const POST: APIRoute = async ({ request }) => {
   const input = await request.json();
 
   await env.DB.query(`
@@ -57,6 +58,10 @@ Do not create `sf.*`, SDK, proxy, or runtime-helper wrappers around these
 bindings. Do not add S3, D1, R2, KV, or Celld credentials. Do not add
 customer-selectable DB/storage flags; both bindings are always present.
 
+Do not use `Astro.locals.runtime` or `context.locals.runtime`. Astro removed
+that API in version 6. The template's Worker types make
+`import { env } from "cloudflare:workers"` type-safe.
+
 ## Security boundaries
 
 Platform site access (`public`, `password`, or `google`) is enforced before
@@ -76,6 +81,10 @@ Build a complete, responsive application for the customer's actual business.
 For tools and dashboards, prioritize clear workflows and readable data over
 marketing sections. Update shared theme tokens instead of scattering one-off
 brand colors throughout the code.
+
+Astro markup uses `class` on native HTML elements. Components imported from
+React, including the supplied shadcn/ui components, accept React props and use
+`className`. Keep that boundary explicit when editing `.astro` files.
 
 ## Public-site SEO
 

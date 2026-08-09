@@ -20,6 +20,10 @@ After deployment, use `smallforce app logs`, `smallforce app analytics`, and
 public debugging routes. See `AGENTS.md` for the exact commands and security
 boundary.
 
+Server-side pages and API routes access the application bindings with
+`import { env } from "cloudflare:workers"`. Native Astro HTML attributes use
+`class`; imported React and shadcn/ui components use `className`.
+
 The build emits `dist/worker/entry.mjs` and `dist/client/`. Do not deploy those
 folders directly; the SmallForce CLI packages and activates them as one
 immutable application release.
