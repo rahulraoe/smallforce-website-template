@@ -1,5 +1,3 @@
-const DEFAULT_DECK = "welcome";
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -11,16 +9,6 @@ export default {
       );
     }
 
-    if (url.pathname === "/") {
-      return new Response(null, {
-        status: 302,
-        headers: {
-          "cache-control": "no-store",
-          location: new URL(`/s/${DEFAULT_DECK}`, url).toString(),
-        },
-      });
-    }
-
     const response = await env.ASSETS.fetch(request);
     if (response.status !== 404) return response;
     await response.body?.cancel();
@@ -29,8 +17,8 @@ export default {
       return response;
     }
 
-    // OpenSlide is a client-side application. Unknown presentation routes
-    // must load its index so React Router can resolve them in the browser.
+    // Slidev is a client-side application. Unknown presentation routes load
+    // its index so presenter, overview, export, and history routes resolve.
     return env.ASSETS.fetch(
       new Request(new URL("/index.html", request.url), request),
     );
