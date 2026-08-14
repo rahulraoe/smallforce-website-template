@@ -74,13 +74,85 @@ interface ApplicationStorage {
   delete(input: { path: string }): Promise<{ deleted: true; path: string }>;
 }
 
+type ApplicationAiMessageRole = "system" | "user" | "assistant";
+
+interface ApplicationAi {
+  listModels(): Promise<{
+    defaultModelId: string;
+    models: Array<{
+      id: string;
+      name: string;
+      provider: string;
+      description: string | null;
+      contextWindow: number;
+      maxOutputTokens: number;
+      capabilities: {
+        input: readonly ["text"];
+        output: readonly ["text"];
+        reasoning: boolean;
+        structuredOutput: boolean;
+      };
+    }>;
+  }>;
+  createResponse(input: {
+    model: string;
+    input:
+      | string
+      | Array<{ role: ApplicationAiMessageRole; content: string }>;
+    maxOutputTokens?: number;
+    temperature?: number;
+  }): Promise<{
+    id: string;
+    model: string;
+    outputText: string;
+    finishReason: "stop" | "length" | "content_filter";
+  }>;
+}
+
+type ApplicationIntegrationJsonValue =
+  | boolean
+  | null
+  | number
+  | string
+  | ApplicationIntegrationJsonValue[]
+  | { [name: string]: ApplicationIntegrationJsonValue };
+
+interface ApplicationIntegrations {
+  execute(input: {
+    connectionId: string;
+    toolKey: string;
+    arguments?: { [name: string]: ApplicationIntegrationJsonValue };
+  }): Promise<{
+    data: ApplicationIntegrationJsonValue | null;
+    headers: Readonly<Record<string, string>>;
+    ok: boolean;
+    providerRequestId: string | null;
+    status: number | null;
+  }>;
+}
+
+interface SmallForceApplicationUser {
+  readonly id: string;
+  readonly email: string;
+  readonly name: string | null;
+  readonly imageUrl: string | null;
+  readonly authenticationMethod: "google" | "sso";
+}
+
 interface SmallForceApplicationEnv {
+  AI: ApplicationAi;
   ASSETS: { fetch(request: Request): Promise<Response> };
   DB: ApplicationDatabase;
+  INTEGRATIONS: ApplicationIntegrations;
   STORAGE: ApplicationStorage;
   [name: string]: unknown;
 }
 
 declare namespace Cloudflare {
   interface Env extends SmallForceApplicationEnv {}
+}
+
+interface ExecutionContext<Props = unknown> {
+  /** Null for public and shared-password requests. */
+  readonly user: SmallForceApplicationUser | null;
 }

@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "bun scripts/build.mjs",
-    "build:astro": "astro check && astro build",
+    "build:astro": "bun run check:astro-react-boundary && astro check && astro build",
+    "check:astro-react-boundary": "bun scripts/verify-astro-react-boundary.mjs",
     "check:seo": "bun scripts/verify-seo.mjs",
     "og:render": "bun scripts/render-og.mjs",
     "preview": "astro preview",

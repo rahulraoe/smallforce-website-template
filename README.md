@@ -43,10 +43,17 @@ instructions. Analytics contains human and separate crawler traffic;
 diagnostics contains operational asset, API, status, latency, and rate-limit
 counters.
 
-Every deployed application receives `env.DB` and `env.STORAGE`. Applications
-with immutable browser files also receive `env.ASSETS`; framework adapters use
-that binding to serve the current release. Runtime variables and secrets are
-injected as direct server-only `env.<NAME>` values.
+Every deployed application receives `env.DB`, `env.STORAGE`, `env.AI`, and
+`env.INTEGRATIONS`. Applications with immutable browser files also receive
+`env.ASSETS`; framework adapters use that binding to serve the current release.
+Runtime variables and secrets are injected as direct server-only `env.<NAME>`
+values. Google/SSO requests also carry an immutable request user; public and
+shared-password requests do not.
+
+Public applications should normally avoid `env.AI` and `env.INTEGRATIONS`:
+anonymous visitors can trigger AI spend or third-party reads and mutations.
+The template guides require deliberate authentication, authorization, narrow
+input validation, and abuse controls for either public-facing capability.
 
 Astro applications import that environment from `cloudflare:workers`. The
 template includes Cloudflare runtime types augmented with the SmallForce

@@ -1,6 +1,4 @@
 ---
-import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 
 export const prerender = true;
@@ -18,30 +16,39 @@ export const prerender = true;
           receives app-scoped SQLite, mutable storage, variables, and secrets
           directly from the SmallForce runtime.
         </p>
-        <Button className="mt-8" asChild>
-          <a href="/blog">View content</a>
-        </Button>
+        <a
+          class="mt-8 inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+          href="/blog"
+        >
+          View content
+        </a>
       </div>
     </div>
   </section>
   <section class="mx-auto grid w-full max-w-6xl gap-4 px-5 py-12 md:grid-cols-3">
-    <Card>
-      <CardHeader>
-        <CardTitle>Pages</CardTitle>
-        <CardDescription>Prerender public content and render dynamic routes on demand.</CardDescription>
-      </CardHeader>
-    </Card>
-    <Card>
-      <CardHeader>
-        <CardTitle>Database</CardTitle>
-        <CardDescription>Use parameterized SQLite through env.DB in server code.</CardDescription>
-      </CardHeader>
-    </Card>
-    <Card>
-      <CardHeader>
-        <CardTitle>Storage</CardTitle>
-        <CardDescription>Use env.STORAGE for app-scoped mutable files and quotas.</CardDescription>
-      </CardHeader>
-    </Card>
+    <article class="rounded-xl border bg-card text-card-foreground shadow-sm">
+      <div class="flex flex-col gap-1.5 p-6">
+        <h2 class="font-semibold leading-none">Pages</h2>
+        <p class="text-sm text-muted-foreground">
+          Prerender public content and render dynamic routes on demand.
+        </p>
+      </div>
+    </article>
+    <article class="rounded-xl border bg-card text-card-foreground shadow-sm">
+      <div class="flex flex-col gap-1.5 p-6">
+        <h2 class="font-semibold leading-none">Database</h2>
+        <p class="text-sm text-muted-foreground">
+          Use parameterized SQLite through env.DB in server code.
+        </p>
+      </div>
+    </article>
+    <article class="rounded-xl border bg-card text-card-foreground shadow-sm">
+      <div class="flex flex-col gap-1.5 p-6">
+        <h2 class="font-semibold leading-none">Storage</h2>
+        <p class="text-sm text-muted-foreground">
+          Use env.STORAGE for app-scoped mutable files and quotas.
+        </p>
+      </div>
+    </article>
   </section>
 </BaseLayout>

@@ -21,8 +21,14 @@ public debugging routes. See `AGENTS.md` for the exact commands and security
 boundary.
 
 Server-side pages and API routes access the application bindings with
-`import { env } from "cloudflare:workers"`. Native Astro HTML attributes use
-`class`; imported React and shadcn/ui components use `className`.
+`import { env } from "cloudflare:workers"`. Keep `.astro` files native-first,
+using native HTML with `class` and `for`. Compose supplied React shadcn/ui
+components in `.tsx` files, where JSX uses `className` and `htmlFor`, and then
+import those components into the Astro page. Add `client:*` only when the
+React component needs browser-side interactivity.
+
+The normal build checks this boundary and rejects direct `components/ui`
+imports from `.astro` files.
 
 The build emits `dist/worker/entry.mjs` and `dist/client/`. Do not deploy those
 folders directly; the SmallForce CLI packages and activates them as one

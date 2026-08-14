@@ -9,14 +9,45 @@ surface narrow and intentional.
 - Keep the default Worker export with an asynchronous `fetch` handler.
 - Keep `bun run build`, `scripts/build.mjs`, and the build paths in
   `smallforce.json` aligned.
-- Every app receives `env.DB` and `env.STORAGE`. Runtime variables and secrets
-  are direct properties such as `env.STRIPE_SECRET_KEY`.
+- Every app receives `env.DB`, `env.STORAGE`, `env.AI`, and
+  `env.INTEGRATIONS`. Runtime variables and secrets are direct properties such
+  as `env.STRIPE_SECRET_KEY`.
 - This template has no immutable browser assets, so its
   `build.assetsDirectory` is `null` and application code should not depend on
   `env.ASSETS`.
 - Do not add S3, D1, R2, KV, Celld, or SmallForce control-plane credentials.
 - Do not add DB/storage capability flags. Both app-scoped bindings are always
   present.
+
+`env.AI.listModels()` returns the curated text models currently available to
+the organization's managed OS OpenRouter key. Use
+`env.AI.createResponse({ model, input, maxOutputTokens?, temperature? })` for a
+bounded, non-streaming text response. `input` may be a string or `system`,
+`user`, and `assistant` messages. The result contains `id`, `model`,
+`outputText`, and `finishReason`; it contains no pricing or usage fields. Never
+configure or expose an OpenRouter key yourself.
+
+**Public-app AI warning:** public Workers and anonymous routes should normally
+not call `env.AI`. Any visitor could repeatedly trigger spend against the
+organization's dollar-capped OpenRouter key. If runtime AI is genuinely part
+of a public-facing product, require deliberate application authentication and
+authorization and enforce narrow input, output, concurrency, and abuse
+controls. The default application request limit is not a spending control.
+
+`env.INTEGRATIONS.execute({ connectionId, toolKey, arguments })` executes an
+active connection owned by the same organization without exposing its API key
+or OAuth token. The agent normally selects and hardcodes the connection ID and
+tool key in server source; they are not injected automatically. The bounded
+result contains `data`, safe `headers`, `ok`, `status`, and
+`providerRequestId`. There is no runtime tool search or arbitrary credentialed
+fetch.
+
+**Public-app integration warning:** public Workers and anonymous routes should
+normally not call `env.INTEGRATIONS`. A visitor could trigger provider reads,
+messages, charges, or other mutations. Require deliberate application auth,
+authorize the specific action, validate narrow inputs, and never accept a
+caller-selected connection ID or tool key. V1 authorizes provider execution at
+organization level and does not use `ctx.user` for that decision.
 
 Use parameterized SQLite queries:
 
@@ -39,9 +70,12 @@ operations, cap pagination and payload sizes, and return stable error codes.
 Log useful request IDs and context, but never log secrets, access tokens,
 passwords, or full sensitive request bodies.
 
-Platform access (`public`, `password`, or `google`) protects the entire site
-before this Worker runs. Per-user application authorization is separate and
-should be implemented only when the product requires it.
+Platform access (`public`, `password`, `google`, or organization SSO) protects
+the entire site before this Worker runs. The third `fetch` argument is `ctx`;
+`ctx.user` is the immutable SmallForce identity for Google/SSO requests and is
+`null` for public or shared-password requests. Per-user application
+authorization remains separate and should be implemented only when the product
+requires it. Never trust a request-body user ID instead of `ctx.user`.
 
 ## Development and deployment
 

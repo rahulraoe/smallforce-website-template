@@ -49,6 +49,21 @@ export const POST: APIRoute = async ({ request }) => {
 - `env.DB.query(sql, params)` accepts SQLite SQL and positional parameters.
 - `env.STORAGE` supports `createUpload`, `completeUpload`, `createDownload`,
   `list`, `delete`, and `info`.
+- `env.AI.listModels()` returns the curated text models currently available to
+  the organization's managed OS OpenRouter key.
+- `env.AI.createResponse({ model, input, maxOutputTokens?, temperature? })`
+  creates a bounded, non-streaming text response. `input` may be a string or an
+  array of `system`, `user`, and `assistant` messages. The result contains
+  `id`, `model`, `outputText`, and `finishReason`; it contains no pricing or
+  usage fields.
+- `env.INTEGRATIONS.execute({ connectionId, toolKey, arguments })` executes an
+  active connection owned by the same organization without exposing its API
+  key or OAuth token. The agent normally selects and hardcodes `connectionId`
+  and `toolKey` in server code; SmallForce does not inject a connection ID
+  automatically. Composio permits tools in the connection toolkit, while a
+  custom OpenAPI connection permits only operations selected in its policy.
+  The bounded result contains `data`, safe `headers`, `ok`, `status`, and
+  `providerRequestId`. There is no runtime tool search or generic proxy.
 - Runtime variables and secrets are direct server-only properties such as
   `env.STRIPE_SECRET_KEY`. They are not `import.meta.env` values.
 - `env.ASSETS` is the immutable active-release asset binding used by the Astro
@@ -58,16 +73,42 @@ Do not create `sf.*`, SDK, proxy, or runtime-helper wrappers around these
 bindings. Do not add S3, D1, R2, KV, or Celld credentials. Do not add
 customer-selectable DB/storage flags; both bindings are always present.
 
+Call `env.AI` only from server-rendered pages or server API handlers and only
+inside a request. Never put an OpenRouter key in application configuration;
+the binding uses the organization's OS key without exposing it.
+
+**Public-app AI warning:** public websites and public API routes should
+normally not use `env.AI`. Any anonymous visitor could repeatedly trigger
+spend against the organization's dollar-capped OpenRouter key. Prefer
+precomputed content for public marketing pages. If a public-facing product
+genuinely needs runtime AI, add explicit application authentication and
+authorization plus narrow input, output, concurrency, and abuse controls; the
+default application request limit alone is not a spending control.
+
+**Public-app integration warning:** public websites and anonymous API routes
+should normally not use `env.INTEGRATIONS`. A visitor could trigger provider
+reads, messages, charges, or other mutations through the organization's
+connection. If the product genuinely requires it, authenticate and authorize
+the route, validate a narrow input, and never accept a caller-selected
+connection ID or tool key. V1 authorizes at organization level and does not use
+`cfContext.user` to approve the provider call.
+
 Do not use `Astro.locals.runtime` or `context.locals.runtime`. Astro removed
 that API in version 6. The template's Worker types make
 `import { env } from "cloudflare:workers"` type-safe.
 
 ## Security boundaries
 
-Platform site access (`public`, `password`, or `google`) is enforced before
+Platform site access (`public`, `password`, `google`, or organization SSO) is enforced before
 this Worker runs. That protects the whole deployed hostname. Application-level
 accounts and roles are a separate concern and should only be implemented when
 the customer needs them.
+
+On server-rendered pages and routes, `Astro.locals.cfContext.user` is the
+immutable SmallForce identity for Google/SSO requests and is `null` for public
+or shared-password requests. Do not confuse this platform-authenticated person
+with an application-owned account system. Never accept a user ID or email from
+the request body as a substitute for `cfContext.user`.
 
 Keep public API routes narrow. Never expose arbitrary SQL, unrestricted
 storage paths, secret values, or a generic database/storage debugging endpoint.
@@ -82,9 +123,42 @@ For tools and dashboards, prioritize clear workflows and readable data over
 marketing sections. Update shared theme tokens instead of scattering one-off
 brand colors throughout the code.
 
-Astro markup uses `class` on native HTML elements. Components imported from
-React, including the supplied shadcn/ui components, accept React props and use
-`className`. Keep that boundary explicit when editing `.astro` files.
+### Astro and React boundary
+
+Keep `.astro` pages and layouts native-first. Write native HTML directly in
+those files, using Astro/HTML attributes such as `class` and `for`:
+
+```astro
+<form class="grid gap-4">
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" />
+</form>
+```
+
+Do not import the supplied React shadcn/ui components directly into an
+`.astro` file. When the application needs shadcn/ui, compose those components
+inside a `.tsx` React component, where JSX consistently uses `className` and
+`htmlFor`:
+
+```tsx
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+export function EmailField() {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor="email">Email</Label>
+      <Input id="email" name="email" type="email" />
+    </div>
+  );
+}
+```
+
+Import that React component into the Astro page. Add a `client:*` directive
+only when it uses browser-side React state or event handlers; omit hydration
+for static server-rendered markup. This boundary avoids mixing Astro and React
+attribute conventions in one file. The normal build enforces this boundary and
+will reject direct `components/ui` imports from `.astro` files.
 
 ## Public-site SEO
 
