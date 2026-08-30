@@ -195,6 +195,61 @@ unrestricted path from the browser. Enforce file type and size in both the UI
 and the server function. Store durable application metadata in `env.DB` only
 after `completeUpload` succeeds.
 
+### Server-generated files
+
+PDFs, reports, images, and exports may be generated inside a server function or
+server route with a Worker-compatible JavaScript library. Upload the resulting
+bytes through the same bounded storage contract:
+
+```ts
+async function storeGeneratedFile(input: {
+  bytes: Uint8Array
+  contentType: string
+  fileName: string
+  path: string
+}): Promise<{ path: string; sizeBytes: number }> {
+  const bytes = new Uint8Array(input.bytes.byteLength)
+  bytes.set(input.bytes)
+  const { upload } = await env.STORAGE.createUpload({
+    path: input.path,
+    contentType: input.contentType,
+    sizeBytes: bytes.byteLength,
+  })
+
+  const form = new FormData()
+  for (const [name, value] of Object.entries(upload.fields)) {
+    form.append(name, value)
+  }
+  form.append(
+    "file",
+    new Blob([bytes.buffer], { type: input.contentType }),
+    input.fileName,
+  )
+
+  const response = await fetch(upload.url, {
+    method: upload.method,
+    body: form,
+  })
+  await response.body?.cancel()
+  if (!response.ok) {
+    throw new Error(`Storage upload failed with status ${response.status}.`)
+  }
+
+  return env.STORAGE.completeUpload({ uploadId: upload.uploadId })
+}
+```
+
+Generate a collision-resistant, application-owned path; do not let the browser
+choose it. After `completeUpload` succeeds, store the stable path, content type,
+size, owner, and related record ID in `env.DB`. If the database write fails,
+delete the newly stored object or record it for cleanup so it does not become
+an orphan.
+
+To download a generated file, load and authorize its database record, then call
+`env.STORAGE.createDownload({ path })` and return only the short-lived URL and
+expiry. Never store the temporary URL in the database. Use an API route instead
+when an external caller needs a stable HTTP download contract.
+
 ## Platform identity
 
 `context.user` is trusted only when non-null. Public and shared-password
