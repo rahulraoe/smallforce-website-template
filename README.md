@@ -2,11 +2,12 @@
 
 Approved starting points for applications deployed to the SmallForce Celld
 runtime. Each template builds the same platform artifact shape: one Worker
-module plus optional immutable browser assets.
+module graph plus optional immutable browser assets.
 
 | Template | Use it for | Build output |
 | --- | --- | --- |
-| `astro` | Websites and full-stack web applications | Worker + assets |
+| `tanstack` | Full-stack products, dashboards, portals, CRMs, and internal tools | Worker + assets |
+| `astro` | Public, marketing, and content-heavy websites | Worker + assets |
 | `presentations` | Interactive Slidev presentations authored in Markdown | Worker + assets |
 | `worker` | APIs, webhooks, and Worker-first applications | Worker only |
 
@@ -14,13 +15,14 @@ Do not clone this repository manually to create an application. Let the CLI
 copy only the selected template and create the backend application record:
 
 ```sh
+smallforce app init --name "Acme CRM" --slug acme-crm --template tanstack
 smallforce app init --name "Acme Site" --slug acme-site --template astro
 smallforce app init --name "Quarterly Review" --slug quarterly-review --template presentations
 smallforce app init --name "Acme API" --slug acme-api --template worker
 ```
 
-`astro` is the default for a new empty project, so `--template astro` may be
-omitted. After an agent finishes the project:
+`tanstack` is the default for a new empty project, so `--template tanstack`
+may be omitted. After an agent finishes the project:
 
 ```sh
 cd <project-directory>
@@ -56,14 +58,15 @@ anonymous visitors can trigger AI spend or third-party reads and mutations.
 The template guides require deliberate authentication, authorization, narrow
 input validation, and abuse controls for either public-facing capability.
 
-Server-only Astro and Worker modules may import that environment from
-`cloudflare:workers`. Standard handlers receive it as their `env` argument and
-Workflow classes receive it as `this.env`; no SmallForce-specific context
-object is required. The templates include Cloudflare runtime types augmented
-with the SmallForce application binding contract.
+Server-only TanStack, Astro, and Worker modules may import that environment
+from `cloudflare:workers`. Standard handlers receive it as their `env`
+argument and Workflow classes receive it as `this.env`; no
+SmallForce-specific context object is required. The templates include
+Cloudflare runtime types augmented with the SmallForce application binding
+contract.
 
-Astro and Worker applications can independently declare Cloudflare-shaped
-Workflows, Queues, and Cron Triggers in `smallforce.json`. Their
+TanStack, Astro, and Worker applications can independently declare
+Cloudflare-shaped Workflows, Queues, and Cron Triggers in `smallforce.json`. Their
 `src/background.ts` module is bundled with the HTTP entrypoint and contains
 named Workflow classes plus the default Queue and Cron handlers. Each template
 links a focused background-execution reference from its `AGENTS.md`.

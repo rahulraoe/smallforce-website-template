@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "appId": "",
+  "name": "",
+  "slug": "",
+  "backendUrl": "https://backend.smallforcehq.com",
+  "build": {
+    "kind": "worker",
+    "command": "bun run build",
+    "outputDirectory": "dist",
+    "entrypoint": "server/index.js",
+    "assetsDirectory": "client"
+  }
+}
