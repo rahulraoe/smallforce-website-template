@@ -41,8 +41,10 @@ it.
 - `src/background.ts`: Workflow class exports plus Queue and Cron handlers.
 - `src/env.d.ts`: public SmallForce bindings and application-specific binding
   types.
-- `smallforce.json`: application identity, build output, bindings, and
-  background declarations.
+- `smallforce.json`: application identity, build output, Celld compatibility,
+  bindings, and background declarations. Keep the template's
+  `compatibilityDate` and `nodejs_compat` flag; TanStack Start's Worker bundle
+  uses the Cloudflare Node compatibility layer.
 - `references/full-stack-patterns.md`: server functions, Query, Form, tables,
   uploads, and identity patterns.
 - `references/background-execution.md`: Workflows, Queues, and Cron Triggers.
