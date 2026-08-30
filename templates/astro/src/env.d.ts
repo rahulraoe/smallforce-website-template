@@ -131,6 +131,19 @@ interface ApplicationIntegrations {
   }>;
 }
 
+interface ApplicationTelemetry {
+  event(input: {
+    name: string;
+    attributes?: Readonly<Record<string, unknown>>;
+  }): Promise<{ readonly accepted: boolean }>;
+  log(input: {
+    level: "debug" | "info" | "warn" | "error";
+    message: string;
+    fields?: Readonly<Record<string, unknown>>;
+    stack?: string | null;
+  }): Promise<{ readonly accepted: boolean }>;
+}
+
 interface SmallForceApplicationUser {
   readonly id: string;
   readonly email: string;
@@ -145,6 +158,7 @@ interface SmallForceApplicationEnv {
   DB: ApplicationDatabase;
   INTEGRATIONS: ApplicationIntegrations;
   STORAGE: ApplicationStorage;
+  TELEMETRY: ApplicationTelemetry;
   [name: string]: unknown;
 }
 

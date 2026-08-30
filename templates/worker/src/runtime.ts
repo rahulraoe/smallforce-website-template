@@ -66,6 +66,19 @@ export type ApplicationIntegrations = {
   }>;
 };
 
+export type ApplicationTelemetry = {
+  event(input: {
+    name: string;
+    attributes?: Readonly<Record<string, unknown>>;
+  }): Promise<{ readonly accepted: boolean }>;
+  log(input: {
+    level: "debug" | "info" | "warn" | "error";
+    message: string;
+    fields?: Readonly<Record<string, unknown>>;
+    stack?: string | null;
+  }): Promise<{ readonly accepted: boolean }>;
+};
+
 export type ApplicationUser = {
   readonly id: string;
   readonly email: string;
@@ -118,6 +131,7 @@ export type AppEnv = {
     }): Promise<unknown>;
     delete(input: { path: string }): Promise<unknown>;
   };
+  TELEMETRY: ApplicationTelemetry;
   [name: string]: unknown;
 };
 

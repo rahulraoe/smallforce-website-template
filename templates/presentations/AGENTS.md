@@ -59,9 +59,10 @@ observability. Never place API keys, passwords, OAuth credentials, or other
 secrets in the presentation source or browser bundle.
 
 The deployed Worker technically receives the standard SmallForce `env.DB`,
-`env.STORAGE`, `env.AI`, and `env.INTEGRATIONS` server bindings, but a
-presentation should not use them by default. Slidev content runs in the browser
-and must never receive a binding, provider key, or AI response credential.
+`env.STORAGE`, `env.AI`, `env.INTEGRATIONS`, and `env.TELEMETRY` server
+bindings, but a presentation should not use them by default. Slidev content
+runs in the browser and must never receive a binding, provider key, or AI
+response credential.
 
 **Public-app AI warning:** presentations are normally public, static content.
 Do not add an anonymous server endpoint that calls `env.AI`; any visitor could

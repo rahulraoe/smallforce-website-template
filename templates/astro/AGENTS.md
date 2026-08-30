@@ -46,6 +46,15 @@ export const POST: APIRoute = async ({ request }) => {
 };
 ```
 
+This is the normal Cloudflare Workers contract. Do not use `context.env`,
+`ctx.env`, `Astro.locals.runtime`, or a SmallForce binding wrapper. The same
+public environment is passed to Queue and Cron handlers as their `env`
+argument, is available to Workflow classes as `this.env`, and can be imported
+from `cloudflare:workers` in all of those execution paths. Import `env` at
+module scope when useful, but perform binding calls inside a request,
+Workflow, Queue, Cron, or a function called by one of them—not during module
+evaluation.
+
 - `env.DB.query(sql, params)` accepts SQLite SQL and positional parameters.
 - `env.STORAGE` supports `createUpload`, `completeUpload`, `createDownload`,
   `list`, `delete`, and `info`.
@@ -64,6 +73,10 @@ export const POST: APIRoute = async ({ request }) => {
   custom OpenAPI connection permits only operations selected in its policy.
   The bounded result contains `data`, safe `headers`, `ok`, `status`, and
   `providerRequestId`. There is no runtime tool search or generic proxy.
+- `env.TELEMETRY.event({ name, attributes? })` emits a bounded structured
+  application event. `env.TELEMETRY.log({ level, message, fields?, stack? })`
+  emits a structured application log. Neither method accepts tenant identity,
+  release identity, or correlation metadata from application code.
 - Runtime variables and secrets are direct server-only properties such as
   `env.STRIPE_SECRET_KEY`. They are not `import.meta.env` values.
 - `env.ASSETS` is the immutable active-release asset binding used by the Astro

@@ -23,6 +23,10 @@ const env: AppEnv = {
     list: unused,
     delete: unused,
   },
+  TELEMETRY: {
+    event: unused,
+    log: unused,
+  },
 };
 
 const anonymousContext: WorkerExecutionContext = {

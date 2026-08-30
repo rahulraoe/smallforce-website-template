@@ -5,6 +5,12 @@ scheduled work. These are three independent features and may be combined.
 They use Cloudflare Workers authoring contracts; do not create a SmallForce
 wrapper API.
 
+Binding access is identical across execution types: Queue and Cron handlers
+receive the public environment as `env`, Workflow classes receive it as
+`this.env`, and server-only code in any of those paths may import `env` from
+`cloudflare:workers`. Do not use `context.env`, `ctx.env`, or private
+`__SMALLFORCE_*` bindings.
+
 ## Declare the runtime types
 
 Add explicit producer and Workflow bindings to `AppEnv` in `src/runtime.ts`.

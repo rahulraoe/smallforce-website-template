@@ -5,6 +5,12 @@ scheduled work. These are three independent features and may be combined.
 They use Cloudflare Workers authoring contracts; do not create a SmallForce
 wrapper API.
 
+Binding access is identical across execution types: Queue and Cron handlers
+receive the public environment as `env`, Workflow classes receive it as
+`this.env`, and server-only code in any of those paths may import `env` from
+`cloudflare:workers`. Do not use `context.env`, `ctx.env`, or private
+`__SMALLFORCE_*` bindings.
+
 The template's `src/background.ts` is bundled beside Astro's HTTP handler and
 re-exported by the final Worker module. Keep Astro pages and API routes in
 `src/pages`; put Workflow classes plus default Queue and Cron handlers in

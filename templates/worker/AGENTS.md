@@ -10,14 +10,30 @@ surface narrow and intentional.
 - Keep `bun run build`, `scripts/build.mjs`, and the build paths in
   `smallforce.json` aligned.
 - Every app receives `env.DB`, `env.STORAGE`, `env.AI`, and
-  `env.INTEGRATIONS`. Runtime variables and secrets are direct properties such
-  as `env.STRIPE_SECRET_KEY`.
+  `env.INTEGRATIONS`, plus `env.TELEMETRY`. Runtime variables and secrets are
+  direct properties such as `env.STRIPE_SECRET_KEY`.
 - This template has no immutable browser assets, so its
   `build.assetsDirectory` is `null` and application code should not depend on
   `env.ASSETS`.
 - Do not add S3, D1, R2, KV, Celld, or SmallForce control-plane credentials.
 - Do not add DB/storage capability flags. Both app-scoped bindings are always
   present.
+
+Use the normal Cloudflare Workers environment contract. The `env` argument of
+`fetch`, `queue`, and `scheduled` contains the same public bindings that
+server-only modules can import from `cloudflare:workers`; Workflow classes use
+the same environment as `this.env`. Do not use `context.env`, `ctx.env`, a
+SmallForce binding wrapper, or private `__SMALLFORCE_*` names. Import `env` at
+module scope when useful, but perform binding calls inside a handler,
+Workflow, or a function called by one—not during module evaluation.
+
+```ts
+import { env } from "cloudflare:workers";
+
+export async function loadContacts() {
+  return env.DB.query("SELECT * FROM contacts ORDER BY created_at DESC");
+}
+```
 
 ## Workflows, Queues, and Cron Triggers
 
@@ -75,6 +91,11 @@ await env.DB.query(
 Use `env.STORAGE.createUpload()` and `completeUpload()` for mutable files; use
 `createDownload()`, `list()`, `delete()`, and `info()` for later operations.
 Never accept arbitrary SQL or unrestricted storage paths from a public request.
+
+Use `env.TELEMETRY.event({ name, attributes? })` for bounded application
+events and `env.TELEMETRY.log({ level, message, fields?, stack? })` for
+structured application logs. Do not supply organization, application,
+environment, release, or correlation identity; the trusted host adds it.
 
 ## API quality and security
 
