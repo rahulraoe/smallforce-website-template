@@ -36,8 +36,9 @@ it.
 - `src/components/ui/`: installed shadcn/ui source. Reuse before generating or
   inventing another primitive.
 - `src/router.tsx`: one Query client per router request and SSR integration.
-- `src/server.ts`: public Worker entry. It joins TanStack HTTP handling to the
-  SmallForce background handlers.
+- `src/server.ts`: public Worker entry. It serves built browser assets through
+  `env.ASSETS`, then joins TanStack HTTP handling to the SmallForce background
+  handlers.
 - `src/background.ts`: Workflow class exports plus Queue and Cron handlers.
 - `src/env.d.ts`: public SmallForce bindings and application-specific binding
   types.
@@ -187,8 +188,9 @@ import { env } from "cloudflare:workers"
 - Runtime variables and secrets are explicit properties such as
   `env.STRIPE_SECRET_KEY`. Add each property to
   `SmallForceApplicationEnv` in `src/env.d.ts`.
-- `env.ASSETS` is the active release's asset binding. Normal TanStack code
-  does not call it directly.
+- `env.ASSETS` is the active release's asset binding. The platform entry in
+  `src/server.ts` serves built browser files through it; normal routes and
+  components do not call it directly.
 
 Do not create `sf.*`, `context.env`, SDK, proxy, or runtime-helper wrappers
 around these bindings. Do not add Cloudflare, D1, R2, S3, or Celld credentials.
