@@ -15,7 +15,7 @@ if (astro.status !== 0) {
 // graph into one portable module while leaving browser assets untouched.
 rmSync("dist/worker", { force: true, recursive: true });
 const bundle = await Bun.build({
-  entrypoints: ["dist/server/entry.mjs"],
+  entrypoints: ["scripts/astro-worker-entry.mjs"],
   external: ["cloudflare:workers"],
   format: "esm",
   naming: "entry.mjs",

@@ -3,19 +3,14 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, sessionDrivers } from "astro/config";
-import { readFileSync } from "node:fs";
 import { loadEnv } from "vite";
 
-const manifest = JSON.parse(
-  readFileSync(new URL("./smallforce.json", import.meta.url), "utf8"),
-);
 const env = loadEnv(process.env.NODE_ENV || "development", process.cwd(), "");
 const siteUrl = normalizeSiteUrl(
   process.env.PUBLIC_SITE_URL ||
     process.env.SITE_URL ||
     env.PUBLIC_SITE_URL ||
-    env.SITE_URL ||
-    manifest.url,
+    env.SITE_URL,
 );
 
 export default defineConfig({

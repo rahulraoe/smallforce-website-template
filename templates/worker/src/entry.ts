@@ -1,4 +1,7 @@
 import type { AppEnv, WorkerHandler } from "./runtime";
+import { background } from "./background";
+
+export * from "./background";
 
 function json(value: unknown, init: ResponseInit = {}): Response {
   const headers = new Headers(init.headers);
@@ -31,6 +34,7 @@ async function handle(request: Request, env: AppEnv): Promise<Response> {
 }
 
 const worker: WorkerHandler = {
+  ...background,
   async fetch(request, env) {
     try {
       return await handle(request, env);

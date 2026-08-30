@@ -80,6 +80,19 @@ export type WorkerExecutionContext = {
   passThroughOnException(): void;
 };
 
+export type ApplicationBackgroundHandlers<QueueBody = unknown> = {
+  queue?(
+    batch: MessageBatch<QueueBody>,
+    env: AppEnv,
+    ctx: WorkerExecutionContext,
+  ): Promise<void> | void;
+  scheduled?(
+    controller: ScheduledController,
+    env: AppEnv,
+    ctx: WorkerExecutionContext,
+  ): Promise<void> | void;
+};
+
 export type AppEnv = {
   AI: ApplicationAi;
   DB: {
@@ -108,7 +121,7 @@ export type AppEnv = {
   [name: string]: unknown;
 };
 
-export type WorkerHandler = {
+export type WorkerHandler = ApplicationBackgroundHandlers & {
   fetch(
     request: Request,
     env: AppEnv,

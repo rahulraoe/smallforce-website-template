@@ -73,6 +73,20 @@ Do not create `sf.*`, SDK, proxy, or runtime-helper wrappers around these
 bindings. Do not add S3, D1, R2, KV, or Celld credentials. Do not add
 customer-selectable DB/storage flags; both bindings are always present.
 
+## Workflows, Queues, and Cron Triggers
+
+The platform supports Cloudflare-shaped Workflows, Queues, and Cron Triggers as
+three independent features. Astro routes remain the HTTP surface;
+`src/background.ts` is the stable extension point for exported Workflow classes
+and the default `queue()` and `scheduled()` handlers. The build combines both
+surfaces into one Worker entry module without changing Astro's routing.
+
+When any background feature is requested, read
+[`references/background-execution.md`](references/background-execution.md)
+before editing. Declare only the features the application uses in
+`smallforce.json`. Do not create a SmallForce wrapper, combine the three
+features, or add Wrangler.
+
 Call `env.AI` only from server-rendered pages or server API handlers and only
 inside a request. Never put an OpenRouter key in application configuration;
 the binding uses the organization's OS key without exposing it.
@@ -174,10 +188,10 @@ real content and facts. Before shipping a public business website:
   prerendered. `@astrojs/sitemap` automatically includes prerendered routes and
   routes returned by `getStaticPaths()`. Explicitly add truly dynamic SSR URLs
   to the sitemap integration when they should be indexed.
-- Keep `PUBLIC_SITE_URL` or `smallforce.json.url` set to the canonical public
-  origin. When a customer moves to a custom domain, use that domain as
-  `PUBLIC_SITE_URL` before rebuilding so canonical and social URLs do not point
-  to an old SmallForce hostname.
+- Set `PUBLIC_SITE_URL` to the canonical public origin before building a public
+  site. `smallforce.json` deliberately does not cache a mutable URL. When a
+  customer moves to a custom domain, rebuild with that domain as
+  `PUBLIC_SITE_URL` so canonical and social URLs do not point to the old host.
 - `public/og/smallforce-default-v2.jpg` is the versioned SmallForce marketing
   fallback. Do not redesign SmallForce from scratch. For a finished public
   site, adapt `scripts/render-og.mjs` and the source files in
@@ -216,15 +230,16 @@ smallforce app status
 ```
 
 `smallforce app deploy` reads `smallforce.json`, runs its configured build,
-uploads an immutable release, waits for activation, and writes the deployment
-state back to the file. Do not run Wrangler or deploy directly to Cloudflare.
+uploads one immutable release, and waits for Preview activation. Mutable
+release and environment state remains in SmallForce rather than being written
+to `smallforce.json`. Do not run Wrangler or deploy directly to Cloudflare.
 
 Configure runtime values before or after a deployment:
 
 ```sh
-smallforce app var set PUBLIC_API_BASE https://api.example.com
+smallforce app var set PUBLIC_API_BASE https://api.example.com --environment preview
 printf '%s' "$SERVICE_SECRET" | \
-  smallforce app secret put SERVICE_SECRET --value-file -
+  smallforce app secret put SERVICE_SECRET --environment preview --value-file -
 ```
 
 For platform-level site protection:

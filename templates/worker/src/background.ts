@@ -1,0 +1,8 @@
+import type { ApplicationBackgroundHandlers } from "./runtime";
+
+/**
+ * Queue and Cron handlers are added here when declared in smallforce.json.
+ * WorkflowEntrypoint classes are exported from this module as named exports.
+ * Keeping the object empty means this application has no background handlers.
+ */
+export const background: ApplicationBackgroundHandlers = {};

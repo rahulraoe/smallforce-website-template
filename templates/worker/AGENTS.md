@@ -19,6 +19,20 @@ surface narrow and intentional.
 - Do not add DB/storage capability flags. Both app-scoped bindings are always
   present.
 
+## Workflows, Queues, and Cron Triggers
+
+The platform supports Cloudflare-shaped Workflows, Queues, and Cron Triggers as
+three independent features. `src/background.ts` is the stable extension point:
+export Workflow classes from that module and add the default `queue()` or
+`scheduled()` handlers to its `background` object. Declare only the features
+the application actually uses in `smallforce.json`.
+
+When any background feature is requested, read
+[`references/background-execution.md`](references/background-execution.md)
+before editing. Do not create a SmallForce wrapper, combine the three features,
+or add Wrangler. The build re-exports the declared Workflow classes and bundles
+the background handlers with the HTTP Worker in the same immutable release.
+
 `env.AI.listModels()` returns the curated text models currently available to
 the organization's managed OS OpenRouter key. Use
 `env.AI.createResponse({ model, input, maxOutputTokens?, temperature? })` for a
@@ -89,14 +103,15 @@ smallforce app status
 ```
 
 Do not run Wrangler or deploy to Cloudflare. `smallforce app deploy` creates
-and activates the immutable Celld release.
+one immutable release and activates it on Preview. Production requires an
+explicit `smallforce app env deploy production --release <release-id>`.
 
 Configure server environment without committing values:
 
 ```sh
-smallforce app var set APP_GREETING ready
+smallforce app var set APP_GREETING ready --environment preview
 printf '%s' "$SERVICE_SECRET" | \
-  smallforce app secret put SERVICE_SECRET --value-file -
+  smallforce app secret put SERVICE_SECRET --environment preview --value-file -
 ```
 
 Use app-scoped CLI diagnostics instead of creating public debug endpoints:

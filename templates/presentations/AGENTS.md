@@ -9,7 +9,7 @@ Markdown, Vue, interaction, presenter, recording, drawing, and export features.
   quality bar, theme/add-on policy, and deployment contract.
 - Use `.agents/skills/slidev/` for Slidev syntax and feature details. Read only
   the references needed for the current deck.
-- Do not restore OpenSlide or add another presentation framework.
+- Keep Slidev as the presentation framework; do not add another one.
 
 ## Source contract
 

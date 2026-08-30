@@ -4,6 +4,7 @@ rmSync("dist", { force: true, recursive: true });
 
 const bundle = await Bun.build({
   entrypoints: ["src/entry.ts"],
+  external: ["cloudflare:workers"],
   format: "esm",
   naming: "entry.mjs",
   outdir: "dist/worker",

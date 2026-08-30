@@ -52,7 +52,7 @@ describe("starter Worker", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ ok: true });
+    expect(await response.json<{ ok: boolean }>()).toEqual({ ok: true });
   });
 
   it("reads runtime variables directly from env", async () => {
@@ -62,6 +62,8 @@ describe("starter Worker", () => {
       ssoContext,
     );
 
-    expect(await response.json()).toMatchObject({ message: "ready" });
+    expect(await response.json<{ message: string }>()).toMatchObject({
+      message: "ready",
+    });
   });
 });

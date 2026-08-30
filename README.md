@@ -7,7 +7,7 @@ module plus optional immutable browser assets.
 | Template | Use it for | Build output |
 | --- | --- | --- |
 | `astro` | Websites and full-stack web applications | Worker + assets |
-| `presentations` | OpenSlide decks authored by an agent | Worker + assets |
+| `presentations` | Interactive Slidev presentations authored in Markdown | Worker + assets |
 | `worker` | APIs, webhooks, and Worker-first applications | Worker only |
 
 Do not clone this repository manually to create an application. Let the CLI
@@ -59,7 +59,14 @@ Astro applications import that environment from `cloudflare:workers`. The
 template includes Cloudflare runtime types augmented with the SmallForce
 application binding contract.
 
+Astro and Worker applications can independently declare Cloudflare-shaped
+Workflows, Queues, and Cron Triggers in `smallforce.json`. Their
+`src/background.ts` module is bundled with the HTTP entrypoint and contains
+named Workflow classes plus the default Queue and Cron handlers. Each template
+links a focused background-execution reference from its `AGENTS.md`.
+
 Each template contains its own `AGENTS.md`. Agents must read that file before
-editing. `smallforce.json` is owned jointly by the project and CLI: the
-template supplies build paths, and the CLI fills in application identity,
-deployment state, backend URL, and the final site URL.
+editing. `smallforce.json` is owned jointly by the project and CLI: the template
+supplies the build contract, and the CLI fills in stable application identity
+and the backend URL. Release IDs, environment pointers, deployment state, and
+public URLs remain live control-plane state and are never cached in the file.

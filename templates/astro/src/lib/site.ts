@@ -1,16 +1,13 @@
 import manifest from "../../smallforce.json";
 
 const configuredSiteUrl =
-  import.meta.env.PUBLIC_SITE_URL ||
-  import.meta.env.SITE_URL ||
-  manifest.url ||
-  "";
+  import.meta.env.PUBLIC_SITE_URL || import.meta.env.SITE_URL || "";
 
 const siteName = manifest.name || "SmallForce App";
 
 // Replace these defaults with the customer's real public identity while
 // building the site. Keep deployment state and business content separate:
-// smallforce.json remains the CLI-owned deployment manifest.
+// smallforce.json remains the CLI-owned project manifest.
 export const site = {
   name: siteName,
   description:

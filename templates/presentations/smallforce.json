@@ -1,16 +1,14 @@
 {
+  "schemaVersion": 1,
   "appId": "",
-  "deploymentId": "",
   "name": "",
   "slug": "",
   "backendUrl": "https://backend.smallforcehq.com",
-  "url": "",
   "build": {
+    "kind": "worker",
     "command": "bun run build",
     "outputDirectory": "dist",
     "entrypoint": "worker/entry.mjs",
     "assetsDirectory": "client"
-  },
-  "deployment": null,
-  "updatedAt": ""
+  }
 }
